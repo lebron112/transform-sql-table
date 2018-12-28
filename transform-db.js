@@ -7,7 +7,7 @@ async function readTableConfig() {
     fs.statSync(Path.join(__dirname, 'sql'));
   } catch (e) {
     fs.mkdirSync(Path.join(__dirname, 'sql'));
-  } 
+  }
   try {
     fs.statSync(Path.join(__dirname, 'options'));
   } catch (e) {
@@ -19,20 +19,25 @@ async function readTableConfig() {
     fs.mkdirSync(Path.join(__dirname, 'typeorm-model'));
   }
   const dir = fs.readdirSync(Path.join(__dirname, './sql'));
-  return await new Promise( resolve => {
-    mapLimit(dir, 20, async item => {
-      const filePath = Path.join(__dirname + `/sql/${item}`);
-      const fileResult = fs.readFileSync(filePath, { encoding: 'utf8' }).trim();
-      const sqlList = fileResult.split('\n').map(items => items.trim());
-      const result = {};
-      const last = sqlList.pop();
-      result.formName = getTableName(sqlList.shift());
-      result.formName.comment = getComment(last);
-      result.table = transformTableName(sqlList, result.formName);
-      const string = new Uint8Array(Buffer.from(JSON.stringify(result, null, '\t')));
-      await writeFile(`./options/${result.formName.humpTableName}.json`, string, true);
-      await writeFunc(result, './typeorm-model');
-    }, resolve);
+  return await new Promise(resolve => {
+    mapLimit(
+      dir,
+      20,
+      async item => {
+        const filePath = Path.join(__dirname + `/sql/${item}`);
+        const fileResult = fs.readFileSync(filePath, { encoding: 'utf8' }).trim();
+        const sqlList = fileResult.split('\n').map(items => items.trim());
+        const result = {};
+        const last = sqlList.pop();
+        result.formName = getTableName(sqlList.shift());
+        result.formName.comment = getComment(last);
+        result.table = transformTableName(sqlList, result.formName);
+        const string = new Uint8Array(Buffer.from(JSON.stringify(result, null, '\t')));
+        await writeFile(`./options/${result.formName.humpTableName}.json`, string, true);
+        await writeFunc(result, './typeorm-model');
+      },
+      resolve
+    );
   });
 }
 
@@ -73,7 +78,7 @@ function transformTableName(list, tableName) {
     if (item.startsWith('`')) {
       //`
       const name = item.match(/^`[a-zA-Z_0-9]+`/)[0].replace(/\`/g, '');
-      table.name = transformHump(name);
+      table.name = name[0] !== '_' ? transformHump(name) : name;
       table.field = name;
       table.dateBaseOption = checkoutDateBaseOptions(item);
       table.unsigned = /unsigned/i.test(item) ? true : undefined;

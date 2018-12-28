@@ -14,6 +14,8 @@ connection.connect();
   }
   let result = await mysqlQuery(`SELECT TABLE_NAME,TABLE_ROWS FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA= '${config.database}';`);
   result = result.sort( (a,b) => a.TABLE_NAME - b.TABLE_NAME);
+
+  // 并发控制 默认20
   await new Promise( resolve =>{
     mapLimit( result, 20, async (item)=>{
       const createSql = await mysqlQuery(`show create table ${item.TABLE_NAME}`);

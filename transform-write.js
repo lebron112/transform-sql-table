@@ -49,7 +49,7 @@ function transformTsString(tableName, className, table) {
   let string = `
   import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, Index } from 'typeorm';
   @Entity({ name: '${tableName}' })
-  export class ${className} {
+  export class ${className}Entity {
   ${str}
   }
   `;
