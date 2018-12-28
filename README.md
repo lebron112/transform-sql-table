@@ -1,9 +1,8 @@
-# transform-sql-table
-  transform sql to JSON
-``` 
-  set database.js options
+node transform-typeorm.js
 ```
+  set config into database.js
 ```
-  npm i
-  npm run start
+
+``` npm i
+    npm run start
 ```
