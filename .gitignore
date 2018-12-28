@@ -1,0 +1,11 @@
+node_modules
+coverage
+sql
+options
+typeorm-model
+*.sql
+*.ts
+*.json
+*lock.json
+*.vscode
+.idea
