@@ -3,9 +3,7 @@ const path = require('path');
 const writeFunc = require('./transform-write');
 
 readTableConfig();
-
-function readTableConfig(){
-  
+function readTableConfig(){ 
   const Path = require('path');
   try {
     fs.statSync(Path.join(__dirname,'sql'));
@@ -25,7 +23,6 @@ function readTableConfig(){
   }catch(e){
     fs.mkdirSync(Path.join(__dirname,'typeorm-model'))
   }
-
   for(let i = 0; i < dir.length; i ++){
     const filePath = Path.join(__dirname + `/sql/${dir[i]}`);
     const fileResult = fs.readFileSync(filePath, { encoding: 'utf8' }).trim();
@@ -38,7 +35,7 @@ function readTableConfig(){
     const tableOptionString = new Uint8Array(Buffer.from(JSON.stringify(result,null,'\t')));
     fs.writeFile(`./options/${result.formName.humpTableName}.json`, tableOptionString ,(err)=>{
       if (err) throw err;
-      // console.log(result.formName.humpTableName + '已保存');
+      console.log(result.formName.humpTableName + '已保存');
     });
     writeFunc(result, './typeorm-model');
   }
