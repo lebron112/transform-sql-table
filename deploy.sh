@@ -1,2 +1,2 @@
-tar -zcvf script.tar.gz .
-mv script.tar.gz ~/Desktop
+tar -zcvf typeorm-module.tar.gz .
+mv typeorm-module.tar.gz ~/Desktop

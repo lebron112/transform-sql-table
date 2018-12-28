@@ -3,9 +3,8 @@ coverage
 sql
 options
 typeorm-model
-*.sql
 *.ts
-*.json
+options/*.json
 *lock.json
 *.vscode
 .idea
