@@ -4,11 +4,12 @@
   "description": "",
   "main": "transform-typeorm.js",
   "scripts": {
-    "start": "node transform-typeorm.js"
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "typeorm": "^0.3.0-alpha.10"
+    "typeorm": "^0.3.0-alpha.10",
+    "mysql": "^2.16.0"
   }
 }
