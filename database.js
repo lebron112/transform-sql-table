@@ -1,8 +1,8 @@
 module.exports = {
-  host:'your datebase host',
+  host:'10.200.151.27',
   port:'3306',
-  user: 'your datebase user name',
-  database: 'your datebase name',
-  password: '123456'
+  user: 'root',
+  database: 'integral_chain_db',
+  password: 'MyNewPass4!'
 }
 
