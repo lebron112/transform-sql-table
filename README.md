@@ -1,3 +1,11 @@
-set your config into database.js
-npm i 
-npm run start
+```
+  set your config into database.js
+``` 
+
+``` 
+  npm i 
+```
+
+```
+  npm run start
+```
