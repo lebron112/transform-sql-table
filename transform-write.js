@@ -50,7 +50,7 @@ function transformTsString(tableName, className, table) {
   import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, Index } from 'typeorm';
   @Entity({ name: '${tableName}' })
   export class ${className}Entity {
-  ${str}
+    ${str}
   }
   `;
   return string;
@@ -87,12 +87,12 @@ function transhfromColumn({ columnType, columnName, options, type, indexKey }) {
   const isNeed = ['PrimaryGeneratedColumn', 'PrimaryColumn'].includes(columnType) ? '' : '?';
 
   let str = `
-  `;
+    `;
   const isIndex = indexKey
     ? `@Index()
-  `
+    `
     : '';
   const result = `@${columnType}(${options})
-  ${columnName + isNeed}: ${type} ;`;
+    ${columnName + isNeed}: ${type} ;`;
   return str + isIndex + result;
 }
