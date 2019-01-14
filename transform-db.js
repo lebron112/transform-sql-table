@@ -72,6 +72,7 @@ function transformTableName(list, tableName) {
   let primaryKeys = [];
   let uniqueKeys = [];
   let indexKeys = [];
+  let indexList = [];
   for (let i = 0; i < list.length; i++) {
     const table = {};
     const item = list[i];
@@ -91,11 +92,13 @@ function transformTableName(list, tableName) {
       table.dateBaseOption.generated = true;
     } else if (/^UNIQUE KEY/.test(item.trim())) {
       let list = item.match(/\(.+\)/g);
+      // console.log(checkoutIndexKey(item.trim(), list));
       list &&
         (list = list.map(item => {
           item = item.replace(/[()`]/g, ''); //`
           return item;
         }));
+      indexList = indexList.concat();
       uniqueKeys = uniqueKeys.concat(list[0].split(','));
     } else if (/^KEY/.test(item.trim())) {
       let list = item.match(/\(.+\)/g);
@@ -155,6 +158,15 @@ function checkoutDateBaseOptions(str) {
     notValue,
     length: (type === 'varchar' || type === 'decimal') && length ? (length[0] ? length[0] : null) : null
   };
+}
+
+function checkoutIndexKey(str, key) {
+  if (str && key) {
+    return str.replace(new RegExp(key[0].replace('(', '\\(').replace(')', '\\)'), 'g'), '')
+      .replace(/^UNIQUE KEY/, '')
+      .replace(/^KEY/, '')
+      .replace(/`/g, '').trim();
+  }
 }
 
 module.exports = readTableConfig;

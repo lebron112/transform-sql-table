@@ -41,17 +41,18 @@ function transformTsString(tableName, className, table) {
         columnName: item.name,
         options: optionStr,
         indexKey: item.indexKey,
+        uniqueKey: item.uniqueKey,
         type
       }) +
       `
     `;
   }
   let string = `
-  import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, Index } from 'typeorm';
-  @Entity({ name: '${tableName}' })
-  export class ${className}Entity {
-    ${str}
-  }
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, Index } from 'typeorm';
+@Entity({ name: '${tableName}' })
+export class ${className}Entity {
+${str}
+}
   `;
   return string;
 }
@@ -83,16 +84,16 @@ function transhfromOptions(item) {
   return start + str.slice(0, -2) + end;
 }
 
-function transhfromColumn({ columnType, columnName, options, type, indexKey }) {
+function transhfromColumn({ columnType, columnName, options, type, indexKey, uniqueKey }) {
   const isNeed = ['PrimaryGeneratedColumn', 'PrimaryColumn'].includes(columnType) ? '' : '?';
 
   let str = `
-    `;
-  const isIndex = indexKey
-    ? `@Index()
-    `
-    : '';
+  `;
+  const isIndex = indexKey || uniqueKey
+  ? `@Index()
+  `
+  : '';
   const result = `@${columnType}(${options})
-    ${columnName + isNeed}: ${type} ;`;
+  ${columnName + isNeed}: ${type};`;
   return str + isIndex + result;
 }
