@@ -4,7 +4,7 @@ const stringType = ['varchar', 'json', 'enum', 'char', 'text', 'nvarchar', 'char
 const numberType = 'float double dec decimal numeric real number int int2 int4 int8 integer tinyint smallint mediumint bigint'.split(' ');
 const dateType = 'datetime datetime2 datetimeoffset time date year timestamp'.split(' ');
 
-module.exports = async function(options, path) {
+module.exports = async function (options, path) {
   const { formName, table } = options;
   const { tableName, humpTableName } = formName;
   const entityName = tableName.replace(/_/g, '-') + '.entity.ts';
@@ -90,10 +90,11 @@ function transhfromColumn({ columnType, columnName, options, type, indexKey, uni
   let str = `
   `;
   const isIndex = indexKey || uniqueKey
-  ? `@Index()
-  `
-  : '';
-  const result = `@${columnType}(${options})
+    ? `
+  @Index(${uniqueKey ? ' { unique: true }' : ''})` : '';
+
+  const result = `@${columnType}(${options})`;
+  const rt = `${isIndex}
   ${columnName + isNeed}: ${type};`;
-  return str + isIndex + result;
+  return str + result + rt;
 }

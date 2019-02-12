@@ -77,7 +77,6 @@ function transformTableName(list, tableName) {
     const table = {};
     const item = list[i];
     if (item.startsWith('`')) {
-      //`
       const name = item.match(/^`[a-zA-Z_0-9]+`/)[0].replace(/\`/g, '');
       table.name = name[0] !== '_' ? transformHump(name) : name;
       table.field = name;
@@ -92,7 +91,10 @@ function transformTableName(list, tableName) {
       table.dateBaseOption.generated = true;
     } else if (/^UNIQUE KEY/.test(item.trim())) {
       let list = item.match(/\(.+\)/g);
-      // console.log(checkoutIndexKey(item.trim(), list));
+      // try{
+      //   console.log(checkoutIndexKey(item.trim(), list));
+      // }catch(e){}
+      
       list &&
         (list = list.map(item => {
           item = item.replace(/[()`]/g, ''); //`
@@ -102,6 +104,9 @@ function transformTableName(list, tableName) {
       uniqueKeys = uniqueKeys.concat(list[0].split(','));
     } else if (/^KEY/.test(item.trim())) {
       let list = item.match(/\(.+\)/g);
+      // try{
+      //   console.log(checkoutIndexKey(item.trim(), list));
+      // }catch(e){}
       list &&
         (list = list.map(item => {
           item = item.replace(/[()`]/g, '');
@@ -137,12 +142,18 @@ function checkoutDateBaseOptions(str) {
     .split(' ');
   const type = arr[1].trim().replace(/\([0-9,a-zA-Z_]+\)/g, '');
   const length = arr[1].match(/[0-9]+/g);
-  let defultValue, notValue, comment;
+  let defultValue, notValue, comment, nullable;
   arr.forEach((item, index) => {
     let value;
     if (item.trim() === 'DEFAULT') {
       value = arr[index + 1];
-      value && value !== 'NULL' && value !== 'CURRENT_TIMESTAMP' && (defultValue = value);
+      if(value){
+        if(value !== 'NULL' && value !== 'CURRENT_TIMESTAMP'){
+          defultValue = value;
+        }else if(value === 'NULL'){
+          nullable = true;
+        }
+      }
     } else if (item.trim() === 'NOT') {
       value = arr[index + 1];
       value && (notValue = value === 'NULL' ? null : undefined);
@@ -155,6 +166,7 @@ function checkoutDateBaseOptions(str) {
     type,
     comment,
     defultValue,
+    nullable,
     notValue,
     length: (type === 'varchar' || type === 'decimal') && length ? (length[0] ? length[0] : null) : null
   };
