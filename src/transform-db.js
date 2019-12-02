@@ -44,12 +44,12 @@ async function readTableConfig() {
 function getComment(str) {
   str = str.match(/comment=.+/gi, '');
   if (str) {
-    return str[0].replace(/\'|comment=/gi, '').slice(0, -1);
+    return str[0].replace(/'|comment=/gi, '').slice(0, -1);
   }
 }
 
 function getTableName(str) {
-  const tableName = str.split(' ')[2].replace(/\`/g, '');
+  const tableName = str.split(' ')[2].replace(/`/g, '');
   return {
     tableName,
     humpTableName: transformHump(tableName)
@@ -67,7 +67,7 @@ function transformHump(str) {
     .join('');
 }
 
-function transformTableName(list, tableName) {
+function transformTableName(list) {
   const result = [];
   let primaryKeys = [];
   let uniqueKeys = [];
@@ -77,7 +77,7 @@ function transformTableName(list, tableName) {
     const table = {};
     const item = list[i];
     if (item.startsWith('`')) {
-      const name = item.match(/^`[a-zA-Z_0-9]+`/)[0].replace(/\`/g, '');
+      const name = item.match(/^`[a-zA-Z_0-9]+`/)[0].replace(/`/g, '');
       table.name = name[0] !== '_' ? transformHump(name) : name;
       table.field = name;
       table.dateBaseOption = checkoutDateBaseOptions(item);
@@ -85,7 +85,7 @@ function transformTableName(list, tableName) {
       result.push(table);
     } else if (item.startsWith('PRIMARY')) {
       const name = item.match(/`[a-zA-Z_0-9]+`/g);
-      primaryKeys = name.map(item => item.replace(/\`/g, '')); //`
+      primaryKeys = name.map(item => item.replace(/`/g, '')); //`
     }
     if (/AUTO_INCREMENT/.test(item)) {
       table.dateBaseOption.generated = true;
@@ -137,8 +137,8 @@ function transformTableName(list, tableName) {
 
 function checkoutDateBaseOptions(str) {
   const arr = str
-    .replace(/\'/g, '')
-    .replace(/\,$/, '')
+    .replace(/'/g, '')
+    .replace(/,$/, '')
     .split(' ');
   const type = arr[1].trim().replace(/\([0-9,a-zA-Z_]+\)/g, '');
   const length = arr[1].match(/[0-9]+/g);
@@ -172,13 +172,13 @@ function checkoutDateBaseOptions(str) {
   };
 }
 
-function checkoutIndexKey(str, key) {
-  if (str && key) {
-    return str.replace(new RegExp(key[0].replace('(', '\\(').replace(')', '\\)'), 'g'), '')
-      .replace(/^UNIQUE KEY/, '')
-      .replace(/^KEY/, '')
-      .replace(/`/g, '').trim();
-  }
-}
+// function checkoutIndexKey(str, key) {
+//   if (str && key) {
+//     return str.replace(new RegExp(key[0].replace('(', '\\(').replace(')', '\\)'), 'g'), '')
+//       .replace(/^UNIQUE KEY/, '')
+//       .replace(/^KEY/, '')
+//       .replace(/`/g, '').trim();
+//   }
+// }
 
 module.exports = readTableConfig;

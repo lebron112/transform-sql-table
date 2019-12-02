@@ -2,3 +2,4 @@ node_module/*
 logs/*
 *.sql
 api/*
+src/*.js
