@@ -53,6 +53,7 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Prim
 export class ${className}Entity {
 ${str}
 }
+// after copy user shift+alt+O to formatter code
   `;
   return string;
 }

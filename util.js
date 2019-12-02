@@ -3,8 +3,8 @@ module.exports = {
   writeFile: async function (fileName, data, isBuffer = false){
     const buf = new Uint8Array(Buffer.from(data));
     return await new Promise((reslove, reject) =>{
-      fs.writeFile(fileName, isBuffer ? buf : data, err => {
-        err ? reject(error): reslove(data);
+      fs.writeFile(fileName, isBuffer ? buf : data, error => {
+        error ? reject(error): reslove(data);
         // console.log(`${fileName} has saved.`);
       });
     });

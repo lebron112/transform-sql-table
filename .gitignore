@@ -8,3 +8,4 @@ options/*.json
 *lock.json
 *.vscode
 .idea
+database
