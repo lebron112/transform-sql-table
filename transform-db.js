@@ -44,8 +44,9 @@ async function readTableConfig() {
 function getComment(str) {
   str = str.match(/comment=.+/gi, '');
   if (str) {
-    return str[0].replace(/'|comment=/gi, '').slice(0, -1);
+    return str[0].replace(/'|comment=/gi, '').slice(0);
   }
+  return '';
 }
 
 function getTableName(str) {
@@ -94,7 +95,7 @@ function transformTableName(list) {
       // try{
       //   console.log(checkoutIndexKey(item.trim(), list));
       // }catch(e){}
-      
+
       list &&
         (list = list.map(item => {
           item = item.replace(/[()`]/g, ''); //`
@@ -147,10 +148,10 @@ function checkoutDateBaseOptions(str) {
     let value;
     if (item.trim() === 'DEFAULT') {
       value = arr[index + 1];
-      if(value){
-        if(value !== 'NULL' && value !== 'CURRENT_TIMESTAMP'){
+      if (value) {
+        if (value !== 'NULL' && value !== 'CURRENT_TIMESTAMP') {
           defultValue = value;
-        }else if(value === 'NULL'){
+        } else if (value === 'NULL') {
           nullable = true;
         }
       }
@@ -162,14 +163,19 @@ function checkoutDateBaseOptions(str) {
       value && (comment = value);
     }
   });
-  return {
+  const res = {
     type,
     comment,
     defultValue,
     nullable,
     notValue,
-    length: (type === 'varchar' || type === 'decimal') && length ? (length[0] ? length[0] : null) : null
+    length: (type === 'varchar') && length ? (length[0] ? length[0] : null) : null
   };
+  // decimal类型小数点右边的精度
+  if(type === 'decimal') {
+    if(length && length[1]) res.precision = length[1];
+  }
+  return res;
 }
 
 // function checkoutIndexKey(str, key) {

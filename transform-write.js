@@ -8,11 +8,11 @@ module.exports = async function (options, path) {
   const { formName, table } = options;
   const { tableName, humpTableName } = formName;
   const entityName = tableName.replace(/_/g, '-') + '.entity.ts';
-  let tsString = transformTsString(tableName, humpTableName[0].toUpperCase() + humpTableName.slice(1), table);
+  let tsString = transformTsString(tableName, humpTableName[0].toUpperCase() + humpTableName.slice(1), table, formName.comment);
   await writeFile(`${path}/${entityName}`, tsString);
 };
 
-function transformTsString(tableName, className, table) {
+function transformTsString(tableName, className, table, tableCommit) {
   let str = '';
   for (let item of table) {
     let column = item.primaryKey ? (item.dateBaseOption.generated ? 'PrimaryGeneratedColumn' : 'PrimaryColumn') : 'Column';
@@ -49,6 +49,7 @@ function transformTsString(tableName, className, table) {
   }
   let string = `
 import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, Index } from 'typeorm';
+// ${tableCommit}
 @Entity({ name: '${tableName}' })
 export class ${className}Entity {
 ${str}
@@ -75,6 +76,9 @@ function transhfromOptions(item) {
   }
   if (item.dateBaseOption.length) {
     str += `length: ${item.dateBaseOption.length}, `;
+  }
+  if(item.dateBaseOption.precision) {
+    str += `precision: ${item.dateBaseOption.precision}, `;
   }
   if (item.dateBaseOption.comment) {
     str += `comment: '${item.dateBaseOption.comment}', `;
