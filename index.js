@@ -1,5 +1,12 @@
 const readTableConfig = require('./transform-db');
-const config = require('./database');
+let config;
+try {
+  config = require('./database/index');
+}catch(e){
+  console.error(' pleace create index.js at ./database like example.js ');
+  process.exit();
+}
+ 
 const mysql = require('mysql');
 const fs = require('fs');
 const Path = require('path');

@@ -35,6 +35,10 @@ function transformTsString(tableName, className, table, tableCommit) {
     if (item.name === 'updatedAt' && item.dateBaseOption.type === 'datetime') {
       column = dataColumn[1];
     }
+    if (item.dateBaseOption.comment) {
+      str += `  
+  /** ${item.dateBaseOption.comment} */`;
+    }
     str +=
       transhfromColumn({
         columnType: column,
@@ -49,12 +53,12 @@ function transformTsString(tableName, className, table, tableCommit) {
   }
   let string = `
 import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, Index } from 'typeorm';
-// ${tableCommit}
+/** ${tableCommit} */
 @Entity({ name: '${tableName}' })
 export class ${className}Entity {
 ${str}
 }
-// after copy user shift+alt+O to formatter code
+// after copy user shift+alt+o to formatter code
   `;
   return string;
 }
@@ -77,7 +81,7 @@ function transhfromOptions(item) {
   if (item.dateBaseOption.length) {
     str += `length: ${item.dateBaseOption.length}, `;
   }
-  if(item.dateBaseOption.precision) {
+  if (item.dateBaseOption.precision) {
     str += `precision: ${item.dateBaseOption.precision}, `;
   }
   if (item.dateBaseOption.comment) {
@@ -94,10 +98,10 @@ function transhfromColumn({ columnType, columnName, options, type, indexKey, uni
 
   let str = `
   `;
+
   const isIndex = indexKey || uniqueKey
     ? `
   @Index(${uniqueKey ? ' { unique: true }' : ''})` : '';
-
   const result = `@${columnType}(${options})`;
   const rt = `${isIndex}
   ${columnName + isNeed}: ${type};`;
